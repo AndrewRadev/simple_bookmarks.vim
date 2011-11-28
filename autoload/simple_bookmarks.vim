@@ -5,9 +5,9 @@ function! simple_bookmarks#Add(name)
   let cursor = getpos('.')
 
   if file != ''
-    let g:simple_bookmarks_storage = s:ReadBookmarks()
+    call s:ReadBookmarks()
     let g:simple_bookmarks_storage[a:name] = [file, cursor]
-    call s:WriteBookmarks(g:simple_bookmarks_storage)
+    call s:WriteBookmarks()
   else
     echom "No file"
   endif
@@ -21,14 +21,14 @@ function! simple_bookmarks#Del(name)
     return
   endif
 
-  let g:simple_bookmarks_storage = s:ReadBookmarks()
+  call s:ReadBookmarks()
   call remove(g:simple_bookmarks_storage, a:name)
-  call s:WriteBookmarks(g:simple_bookmarks_storage)
+  call s:WriteBookmarks()
 endfunction
 
 " Go to the user-chosen bookmark
 function! simple_bookmarks#Go(name)
-  let g:simple_bookmarks_storage = s:ReadBookmarks()
+  call s:ReadBookmarks()
 
   if !has_key(g:simple_bookmarks_storage, a:name)
     return
@@ -42,7 +42,7 @@ endfunction
 
 " Open all bookmarks in the quickfix window
 function! simple_bookmarks#Copen()
-  let g:simple_bookmarks_storage = s:ReadBookmarks()
+  call s:ReadBookmarks()
   let choices = []
 
   for [name, place] in items(g:simple_bookmarks_storage)
@@ -62,7 +62,7 @@ endfunction
 
 " Completion function for choosing bookmarks
 function! simple_bookmarks#BookmarkNames(A, L, P)
-  let g:simple_bookmarks_storage = s:ReadBookmarks()
+  call s:ReadBookmarks()
   return join(sort(keys(g:simple_bookmarks_storage)), "\n")
 endfunction
 
@@ -80,10 +80,10 @@ function! s:ReadBookmarks()
     let bookmarks[name] = [file, cursor]
   endfor
 
-  return bookmarks
+  let g:simple_bookmarks_storage = bookmarks
 endfunction
 
-function! s:WriteBookmarks(bookmarks)
+function! s:WriteBookmarks()
   let lines          = []
   let bookmarks_file = fnamemodify(g:simple_bookmarks_filename, ':p')
 
