@@ -1,1 +1,102 @@
-TODO
+==============================================================================
+CONTENTS                          *simple-bookmarks* *simple-bookmarks-contents*
+
+    Installation...........................: |simple-bookmarks-installation|
+    Usage..................................: |simple-bookmarks-usage|
+    Commands...............................: |simple-bookmarks-commands|
+    Settings...............................: |simple-bookmarks-settings|
+    Issues.................................: |simple-bookmarks-issues|
+
+
+==============================================================================
+INSTALLATION                                   *simple-bookmarks-installation*
+
+There are several ways to install the plugin. The recommended one is by using
+Tim Pope's pathogen (http://www.vim.org/scripts/script.php?script_id=2332). In
+that case, you can clone the plugin's git repository like so:
+>
+    git clone git://github.com/AndrewRadev/simple_bookmarks.vim.git ~/.vim/bundle/simple_bookmarks
+<
+If your vim configuration is under git version control, you could also set up
+the repository as a submodule, which would allow you to update more easily.
+The command is (provided you're in ~/.vim):
+>
+    git submodule add git://github.com/AndrewRadev/simple_bookmarks.vim.git bundle/simple_bookmarks
+<
+Another way is to simply copy all the essential directories inside the ~.vim/
+directory: plugin, autoload, doc.
+
+==============================================================================
+USAGE                                                 *simple-bookmarks-usage*
+
+The |:Bookmark| command accepts a name to store the bookmark. It will save the
+current file and the cursor position to ~/.vim_bookmarks (by default).
+Afterwards, you can use |:GotoBookmark| with a specific name to jump to that.
+The command is tab-completed with all known names.
+
+To delete a mark, use |:DelBookmark|. It works exactly the same as
+|:GotoBookmark| -- it accepts the name of the mark, which is tab-completed.
+
+If you'd like to view all your bookmarks, you can use |:CopenBookmarks| to
+load them in the quickfix window.
+
+Note that bookmarks should be synchronized between vim instances. Anytime you
+add a mark in one vim instance, it should be available in all others. In
+practice, this is achieved by simply reading and writing the whole file on
+each update. I have yet to experiment to find out if there are any performance
+issues or race conditions. If you find any issues, please open a bug report on
+github: https://github.com/AndrewRadev/simple_bookmarks.vim/issues
+
+==============================================================================
+COMMANDS                                           *simple-bookmarks-commands*
+
+                                              *:Bookmark*
+:Bookmark {name}     Saves the current file and cursor position as a bookmark
+                     with the name {name}.
+
+                                              *:GotoBookmark*
+:GotoBookmark {name} Opens up the bookmark associated with the name {name}.
+                     Restores the cursor position the way it was at the time
+                     the bookmark was created. Tab-completed with all known
+                     bookmark names.
+
+                                              *:DelBookmark*
+:DelBookmark {name}  Deletes the bookmark named {name}. Tab-completed with all
+                     known bookmark names.
+
+                                              *:CopenBookmarks*
+:CopenBookmarks      Shows all bookmarks in the quickfix window.
+
+==============================================================================
+SETTINGS                                           *simple-bookmarks-settings*
+
+These are the variables that control the behaviour of the plugin.
+
+                                                 *g:simple_bookmarks_filename*
+>
+    let g:simple_bookmarks_filename = '~/.vim_bookmarks'
+<
+
+Default value: '~/.vim_bookmarks'
+
+This variable is the name of the file that stores the bookmarks. The actual
+storage format is:
+>
+    bookmark name \t /path/to/file \t bufnum:lnum:col:off
+<
+In words, the three parts of a bookmark are tab-delimited, and the last one,
+describing the cursor position, contains numbers that are colon-delimited.
+
+==============================================================================
+ISSUES                                               *simple-bookmarks-issues*
+
+- Still not tested for performance problems or race issues.
+- Deletion doesn't prompt before removing a bookmark. Maybe it should.
+- The storage mechanism is dead simple and it's possible to break it, though
+  it seems unlikely.
+
+Any other issues and suggestions are very welcome on the github bugtracker:
+https://github.com/AndrewRadev/simple_bookmarks.vim/issues
+
+
+vim:tw=78:sw=4:ft=help:norl:
