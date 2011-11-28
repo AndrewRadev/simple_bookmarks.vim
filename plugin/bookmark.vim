@@ -1,3 +1,11 @@
+if exists('g:loaded_simple_bookmarks') || &cp
+  finish
+endif
+
+let g:loaded_simple_bookmarks = '0.0.1' " version number
+let s:keepcpo                 = &cpo
+set cpo&vim
+
 if !exists('g:simple_bookmarks_storage')
   let g:simple_bookmarks_storage = {}
 endif
