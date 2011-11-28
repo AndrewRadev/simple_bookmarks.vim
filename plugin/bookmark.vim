@@ -1,5 +1,3 @@
-set viminfo+=!
-
 if !exists('g:simple_bookmarks_storage')
   let g:simple_bookmarks_storage = {}
 endif
