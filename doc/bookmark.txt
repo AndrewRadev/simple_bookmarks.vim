@@ -23,7 +23,7 @@ The command is (provided you're in ~/.vim):
 >
     git submodule add git://github.com/AndrewRadev/simple_bookmarks.vim.git bundle/simple_bookmarks
 <
-Another way is to simply copy all the essential directories inside the ~.vim/
+Another way is to simply copy all the essential directories inside the ~/.vim
 directory: plugin, autoload, doc.
 
 ==============================================================================
