@@ -38,6 +38,7 @@ function! simple_bookmarks#Go(name)
 
   exe 'edit '.filename
   call setpos('.', cursor)
+  silent! normal! zo
 endfunction
 
 " Open all bookmarks in the quickfix window
