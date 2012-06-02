@@ -1,12 +1,13 @@
-" Add the current [filename, cursor position] as a bookmark under the given
-" name
+" Add the current [filename, cursor position, line content] as a bookmark
+" under the given name
 function! simple_bookmarks#Add(name)
   let file   = expand('%:p')
   let cursor = getpos('.')
+  let line   = getline('.')
 
   if file != ''
     call s:ReadBookmarks()
-    let g:simple_bookmarks_storage[a:name] = [file, cursor]
+    let g:simple_bookmarks_storage[a:name] = [file, cursor, line]
     call s:WriteBookmarks()
   else
     echom "No file"
@@ -34,7 +35,7 @@ function! simple_bookmarks#Go(name)
     return
   endif
 
-  let [filename, cursor] = g:simple_bookmarks_storage[a:name]
+  let [filename, cursor, line] = g:simple_bookmarks_storage[a:name]
 
   exe 'edit '.filename
   call setpos('.', cursor)
@@ -46,11 +47,19 @@ function! simple_bookmarks#Copen()
   call s:ReadBookmarks()
   let choices = []
 
+  let max_len = 0
+  for name in keys(g:simple_bookmarks_storage)
+    if max_len < len(name)
+      let max_len = len(name)
+    endif
+  endfor
+
   for [name, place] in items(g:simple_bookmarks_storage)
-    let [filename, cursor] = place
+    let [filename, cursor, line] = place
+    let padding = repeat(' ', max_len - len(name))
 
     call add(choices, {
-          \ 'text':     name,
+          \ 'text':     name.padding.' | '.line,
           \ 'filename': filename,
           \ 'lnum':     cursor[1],
           \ 'col':      cursor[2]
@@ -76,9 +85,9 @@ function! s:ReadBookmarks()
   endif
 
   for line in readfile(bookmarks_file)
-    let [name, file, cursor_description] = split(line, "\t")
+    let [name, file, cursor_description, line] = split(line, "\t")
     let cursor = split(cursor_description, ':')
-    let bookmarks[name] = [file, cursor]
+    let bookmarks[name] = [file, cursor, line]
   endfor
 
   let g:simple_bookmarks_storage = bookmarks
@@ -89,9 +98,9 @@ function! s:WriteBookmarks()
   let bookmarks_file = fnamemodify(g:simple_bookmarks_filename, ':p')
 
   for [name, place] in items(g:simple_bookmarks_storage)
-    let [filename, cursor] = place
+    let [filename, cursor, line] = place
     let cursor_description = join(cursor, ':')
-    let line               = join([name, filename, cursor_description], "\t")
+    let line               = join([name, filename, cursor_description, line], "\t")
 
     call add(lines, line)
   endfor
