@@ -3,7 +3,7 @@
 function! simple_bookmarks#Add(name)
   let file   = expand('%:p')
   let cursor = getpos('.')
-  let line   = getline('.')
+  let line   = substitute(getline('.'), '\v(^\s+)|(\s+$)', '', 'g')
 
   if file != ''
     call s:ReadBookmarks()
@@ -12,18 +12,17 @@ function! simple_bookmarks#Add(name)
   else
     echom "No file"
   endif
-
-  wviminfo
 endfunction
 
 " Delete the user-chosen bookmark
 function! simple_bookmarks#Del(name)
+  call s:ReadBookmarks()
+
   if !has_key(g:simple_bookmarks_storage, a:name)
     return
   endif
-
-  call s:ReadBookmarks()
   call remove(g:simple_bookmarks_storage, a:name)
+
   call s:WriteBookmarks()
 endfunction
 
@@ -35,7 +34,7 @@ function! simple_bookmarks#Go(name)
     return
   endif
 
-  let [filename, cursor, line] = g:simple_bookmarks_storage[a:name]
+  let [filename, cursor, _line] = g:simple_bookmarks_storage[a:name]
 
   exe 'edit '.filename
   call setpos('.', cursor)
@@ -47,19 +46,11 @@ function! simple_bookmarks#Copen()
   call s:ReadBookmarks()
   let choices = []
 
-  let max_len = 0
-  for name in keys(g:simple_bookmarks_storage)
-    if max_len < len(name)
-      let max_len = len(name)
-    endif
-  endfor
-
   for [name, place] in items(g:simple_bookmarks_storage)
     let [filename, cursor, line] = place
-    let padding = repeat(' ', max_len - len(name))
 
     call add(choices, {
-          \ 'text':     name.padding.' | '.line,
+          \ 'text':     name.' | '.line,
           \ 'filename': filename,
           \ 'lnum':     cursor[1],
           \ 'col':      cursor[2]
@@ -85,8 +76,13 @@ function! s:ReadBookmarks()
   endif
 
   for line in readfile(bookmarks_file)
-    let [name, file, cursor_description, line] = split(line, "\t")
-    let cursor = split(cursor_description, ':')
+    let parts = split(line, "\t")
+
+    let name   = parts[0]
+    let file   = parts[1]
+    let cursor = split(parts[2], ':')
+    let line   = get(parts, 3, '')
+
     let bookmarks[name] = [file, cursor, line]
   endfor
 
@@ -94,16 +90,17 @@ function! s:ReadBookmarks()
 endfunction
 
 function! s:WriteBookmarks()
-  let lines          = []
+  let records        = []
   let bookmarks_file = fnamemodify(g:simple_bookmarks_filename, ':p')
 
   for [name, place] in items(g:simple_bookmarks_storage)
     let [filename, cursor, line] = place
-    let cursor_description = join(cursor, ':')
-    let line               = join([name, filename, cursor_description, line], "\t")
+    let line                     = substitute(line, "\t", ' ', 'g') " avoid possible delimiter problems
+    let cursor_description       = join(cursor, ':')
+    let record                   = join([name, filename, cursor_description, line], "\t")
 
-    call add(lines, line)
+    call add(records, record)
   endfor
 
-  call writefile(lines, bookmarks_file)
+  call writefile(records, bookmarks_file)
 endfunction
