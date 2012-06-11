@@ -67,8 +67,22 @@ function! simple_bookmarks#BookmarkNames(A, L, P)
   return join(sort(keys(g:simple_bookmarks_storage)), "\n")
 endfunction
 
+function! simple_bookmarks#ShowSigns()
+  call s:ReadBookmarks()
+
+  if empty(g:simple_bookmarks_storage_by_file)
+    return
+  endif
+
+  for entry in get(g:simple_bookmarks_storage_by_file, expand('%:p'), [])
+    let line = entry[1]
+    exe 'sign place '.line.' line='.line.' name=bookmark file='.expand('%:p')
+  endfor
+endfunction
+
 function! s:ReadBookmarks()
   let bookmarks      = {}
+  let files          = {}
   let bookmarks_file = fnamemodify(g:simple_bookmarks_filename, ':p')
 
   if !filereadable(bookmarks_file)
@@ -84,9 +98,19 @@ function! s:ReadBookmarks()
     let line   = get(parts, 3, '')
 
     let bookmarks[name] = [file, cursor, line]
+
+    if g:simple_bookmarks_signs
+      " then we'll index by filename
+      if !has_key(files, file)
+        let files[file] = []
+      endif
+
+      call add(files[file], cursor)
+    endif
   endfor
 
-  let g:simple_bookmarks_storage = bookmarks
+  let g:simple_bookmarks_storage         = bookmarks
+  let g:simple_bookmarks_storage_by_file = files
 endfunction
 
 function! s:WriteBookmarks()
