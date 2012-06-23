@@ -41,3 +41,6 @@ if g:simple_bookmarks_signs || g:simple_bookmarks_highlight
   sign define bookmark text=->
   autocmd BufRead * call simple_bookmarks#Highlight()
 endif
+
+let &cpo = s:keepcpo
+unlet s:keepcpo
