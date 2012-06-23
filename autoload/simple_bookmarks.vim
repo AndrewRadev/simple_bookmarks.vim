@@ -49,12 +49,26 @@ function! simple_bookmarks#Copen()
   for [name, place] in items(g:simple_bookmarks_storage)
     let [filename, cursor, line] = place
 
-    call add(choices, {
-          \ 'text':     name.' | '.line,
-          \ 'filename': filename,
-          \ 'lnum':     cursor[1],
-          \ 'col':      cursor[2]
-          \ })
+    if g:simple_bookmarks_long_quickfix
+      " then place the line on its own below
+      call add(choices, {
+            \ 'text':     name,
+            \ 'filename': filename,
+            \ 'lnum':     cursor[1],
+            \ 'col':      cursor[2]
+            \ })
+      call add(choices, {
+            \ 'text': line
+            \ })
+    else
+      " place the line next to the bookmark name
+      call add(choices, {
+            \ 'text':     name.' | '.line,
+            \ 'filename': filename,
+            \ 'lnum':     cursor[1],
+            \ 'col':      cursor[2]
+            \ })
+    endif
   endfor
 
   call setqflist(choices)

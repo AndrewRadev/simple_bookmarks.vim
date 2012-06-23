@@ -72,6 +72,7 @@ SETTINGS                                           *simple-bookmarks-settings*
 
 These are the variables that control the behaviour of the plugin.
 
+
                                                  *g:simple_bookmarks_filename*
 >
     let g:simple_bookmarks_filename = '~/.vim_bookmarks'
@@ -88,6 +89,19 @@ In words, the four parts of a bookmark are tab-delimited, and the
 second-to-last one, describing the cursor position, contains numbers that are
 colon-delimited.
 
+
+                                            *g:simple_bookmarks_long_quickfix*
+>
+    let g:simple_bookmarks_long_quickfix = 0
+<
+
+Default value: 0
+
+The actual contents of the line are shown next to the bookmark's name. Setting
+this variable to 1 would make them go underneath the line instead, making it
+more readable, but possibly a bit more difficult to navigate.
+
+
                                                     *g:simple_bookmarks_signs*
 >
     let g:simple_bookmarks_signs = 0
@@ -97,6 +111,7 @@ Default value: 0
 
 Setting this variable to 1 would make the plugin place "->" signs on
 bookmarked lines.
+
 
                                                 *g:simple_bookmarks_highlight*
                                                 *SimpleBookmark*

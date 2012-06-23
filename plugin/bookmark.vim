@@ -18,6 +18,10 @@ if !exists('g:simple_bookmarks_filename')
   let g:simple_bookmarks_filename = '~/.vim_bookmarks'
 endif
 
+if !exists('g:simple_bookmarks_long_quickfix')
+  let g:simple_bookmarks_long_quickfix = 0
+endif
+
 if !exists('g:simple_bookmarks_signs')
   let g:simple_bookmarks_signs = 0
 endif
