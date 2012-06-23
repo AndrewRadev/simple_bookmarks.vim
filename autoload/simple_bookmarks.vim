@@ -67,7 +67,7 @@ function! simple_bookmarks#BookmarkNames(A, L, P)
   return join(sort(keys(g:simple_bookmarks_storage)), "\n")
 endfunction
 
-function! simple_bookmarks#ShowSigns()
+function! simple_bookmarks#Highlight()
   call s:ReadBookmarks()
 
   if empty(g:simple_bookmarks_storage_by_file)
@@ -76,7 +76,14 @@ function! simple_bookmarks#ShowSigns()
 
   for entry in get(g:simple_bookmarks_storage_by_file, expand('%:p'), [])
     let line = entry[1]
-    exe 'sign place '.line.' line='.line.' name=bookmark file='.expand('%:p')
+
+    if g:simple_bookmarks_signs
+      exe 'sign place '.line.' line='.line.' name=bookmark file='.expand('%:p')
+    endif
+
+    if g:simple_bookmarks_highlight
+      exe 'syntax match SimpleBookmark /^.*\%'.line.'l.*$/'
+    endif
   endfor
 endfunction
 
@@ -99,7 +106,7 @@ function! s:ReadBookmarks()
 
     let bookmarks[name] = [file, cursor, line]
 
-    if g:simple_bookmarks_signs
+    if g:simple_bookmarks_signs || g:simple_bookmarks_highlight
       " then we'll index by filename
       if !has_key(files, file)
         let files[file] = []
