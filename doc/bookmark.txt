@@ -82,15 +82,38 @@ Default value: '~/.vim_bookmarks'
 This variable is the name of the file that stores the bookmarks. The actual
 storage format is:
 >
-    bookmark name \t /path/to/file \t bufnum:lnum:col:off
+    bookmark name \t /path/to/file \t bufnum:lnum:col:off \t bookmarked line
 <
-In words, the three parts of a bookmark are tab-delimited, and the last one,
-describing the cursor position, contains numbers that are colon-delimited.
+In words, the four parts of a bookmark are tab-delimited, and the
+second-to-last one, describing the cursor position, contains numbers that are
+colon-delimited.
+
+                                                    *g:simple_bookmarks_signs*
+>
+    let g:simple_bookmarks_signs = 0
+<
+
+Default value: 0
+
+Setting this variable to 1 would make the plugin place "->" signs on
+bookmarked lines.
+
+                                                *g:simple_bookmarks_highlight*
+                                                *SimpleBookmark*
+>
+    let g:simple_bookmarks_highlight = 0
+<
+
+Default value: 0
+
+Setting this variable to 1 would make the plugin highlight bookmarked lines.
+The syntax group that's highlighted is |SimpleBookmark| and it's linked to
+|Search| by default. If you want to customize it, you can use Vim's built-in
+|:highlight| command.
 
 ==============================================================================
 ISSUES                                               *simple-bookmarks-issues*
 
-- Still not tested for performance problems or race issues.
 - Deletion doesn't prompt before removing a bookmark. Maybe it should.
 - The storage mechanism is dead simple and it's possible to break it, though
   it seems unlikely.
