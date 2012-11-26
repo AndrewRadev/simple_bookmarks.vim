@@ -126,6 +126,28 @@ The syntax group that's highlighted is |SimpleBookmark| and it's linked to
 |Search| by default. If you want to customize it, you can use Vim's built-in
 |:highlight| command.
 
+                                               *g:simple_bookmarks_auto_close*
+>
+    let g:simple_bookmarks_auto_close = 1
+<
+
+Default value: 1
+
+If this variable is set to 1, the plugin will automatically close the quickfix
+window whenever a bookmark is chosen from it. Setting it to 0 disables this
+special behaviour and leaves the quickfix window open.
+
+
+                                                  *g:simple_bookmarks_new_tab*
+>
+    let g:simple_bookmarks_new_tab = 1
+<
+
+Default value: 0
+
+If this variable is set to 1, the plugin will open bookmarks in a new tab
+instead of using the standard quickfix window behaviour.
+
 ==============================================================================
 ISSUES                                               *simple-bookmarks-issues*
 

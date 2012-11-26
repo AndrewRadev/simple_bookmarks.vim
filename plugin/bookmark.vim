@@ -30,6 +30,14 @@ if !exists('g:simple_bookmarks_highlight')
   let g:simple_bookmarks_highlight = 0
 endif
 
+if !exists('g:simple_bookmarks_new_tab')
+  let g:simple_bookmarks_new_tab = 0
+endif
+
+if !exists('g:simple_bookmarks_auto_close')
+  let g:simple_bookmarks_auto_close = 1
+endif
+
 command! -nargs=1 Bookmark call simple_bookmarks#Add(<f-args>)
 command! -nargs=1 -complete=custom,simple_bookmarks#BookmarkNames DelBookmark call simple_bookmarks#Del(<f-args>)
 command! -nargs=1 -complete=custom,simple_bookmarks#BookmarkNames GotoBookmark call simple_bookmarks#Go(<f-args>)

@@ -73,6 +73,8 @@ function! simple_bookmarks#Copen()
 
   call setqflist(choices)
   copen
+
+  call s:SetupQuickfixMappings()
 endfunction
 
 " Completion function for choosing bookmarks
@@ -148,4 +150,20 @@ function! s:WriteBookmarks()
   endfor
 
   call writefile(records, bookmarks_file)
+endfunction
+
+function! s:SetupQuickfixMappings()
+  let cr_mapping = '<cr>'
+
+  if g:simple_bookmarks_auto_close
+    let cr_mapping = cr_mapping.':cclose<cr>'
+  endif
+
+  if g:simple_bookmarks_new_tab
+    let cr_mapping = '<c-w>'.cr_mapping.':tabedit %<cr>gT:quit<cr>gt'
+  endif
+
+  if cr_mapping != '<cr>'
+    exe 'nnoremap <silent> <buffer> <cr> '.cr_mapping
+  endif
 endfunction
