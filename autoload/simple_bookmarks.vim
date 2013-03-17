@@ -9,6 +9,11 @@ function! simple_bookmarks#Add(name)
     call s:ReadBookmarks()
     let g:simple_bookmarks_storage[a:name] = [file, cursor, line]
     call s:WriteBookmarks()
+
+    if s:QuickfixOpened()
+      call simple_bookmarks#Copen()
+      wincmd p
+    endif
   else
     echom "No file"
   endif
@@ -24,6 +29,11 @@ function! simple_bookmarks#Del(name)
   call remove(g:simple_bookmarks_storage, a:name)
 
   call s:WriteBookmarks()
+
+  if s:QuickfixOpened()
+    call simple_bookmarks#Copen()
+    wincmd p
+  endif
 endfunction
 
 " Go to the user-chosen bookmark
@@ -73,6 +83,7 @@ function! simple_bookmarks#Copen()
 
   call setqflist(choices)
   copen
+  let w:simple_bookmarks_quickfix = 1
 
   call s:SetupQuickfixMappings()
 endfunction
@@ -166,4 +177,14 @@ function! s:SetupQuickfixMappings()
   if cr_mapping != '<cr>'
     exe 'nnoremap <silent> <buffer> <cr> '.cr_mapping
   endif
+endfunction
+
+function! s:QuickfixOpened()
+  for winnr in range(1, winnr('$'))
+    if getwinvar(winnr, 'simple_bookmarks_quickfix')
+      return 1
+    end
+  endfor
+
+  return 0
 endfunction
