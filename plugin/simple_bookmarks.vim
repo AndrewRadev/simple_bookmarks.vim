@@ -6,6 +6,8 @@ let g:loaded_simple_bookmarks = '0.0.2' " version number
 let s:keepcpo                 = &cpo
 set cpo&vim
 
+let g:simple_bookmarks_deletion_stack = []
+
 if !exists('g:simple_bookmarks_storage')
   let g:simple_bookmarks_storage = {}
 endif
@@ -36,6 +38,10 @@ endif
 
 if !exists('g:simple_bookmarks_auto_close')
   let g:simple_bookmarks_auto_close = 1
+endif
+
+if !exists('g:simple_bookmarks_no_qf_mappings')
+  let g:simple_bookmarks_no_qf_mappings = 0
 endif
 
 command! -nargs=1 Bookmark call simple_bookmarks#Add(<f-args>)

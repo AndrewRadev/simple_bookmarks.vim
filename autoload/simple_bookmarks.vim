@@ -1,9 +1,18 @@
 " Add the current [filename, cursor position, line content] as a bookmark
 " under the given name
-function! simple_bookmarks#Add(name)
-  let file   = expand('%:p')
-  let cursor = getpos('.')
-  let line   = substitute(getline('.'), '\v(^\s+)|(\s+$)', '', 'g')
+function! simple_bookmarks#Add(name, ...)
+  if a:0 > 0
+    " then we have the needed data as the second argument
+    let data   = a:1
+    let file   = data.file
+    let cursor = data.cursor
+    let line   = data.line
+  else
+    " we get it from the current position of the cursor
+    let file   = expand('%:p')
+    let cursor = getpos('.')
+    let line   = substitute(getline('.'), '\v(^\s+)|(\s+$)', '', 'g')
+  endif
 
   if file != ''
     call s:ReadBookmarks()
@@ -164,6 +173,10 @@ function! s:WriteBookmarks()
 endfunction
 
 function! s:SetupQuickfixMappings()
+  if g:simple_bookmarks_no_qf_mappings
+    return
+  endif
+
   let cr_mapping = '<cr>'
 
   if g:simple_bookmarks_auto_close
@@ -177,6 +190,65 @@ function! s:SetupQuickfixMappings()
   if cr_mapping != '<cr>'
     exe 'nnoremap <silent> <buffer> <cr> '.cr_mapping
   endif
+
+  nnoremap <buffer> dd :call <SID>DeleteQuickfixBookmark()<cr>
+  nnoremap <buffer> u :call <SID>UndoDeleteQuickfixBookmark()<cr>
+endfunction
+
+function! s:DeleteQuickfixBookmark()
+  let saved_cursor = getpos('.')
+  let index        = line('.') - 1
+  let qflist       = getqflist()
+
+  if index >= len(qflist)
+    " somehow, the index isn't right
+    echo
+    return
+  end
+
+  let bookmark_data = qflist[index]
+
+  if bookmark_data.bufnr == 0
+    " it's not a real bookmark
+    echo
+    return
+  end
+
+  if g:simple_bookmarks_long_quickfix
+    let name = bookmark_data.text
+  else
+    let name = matchstr(bookmark_data.text, '.\{-}\ze | ')
+  endif
+
+  let bookmark = g:simple_bookmarks_storage[name]
+
+  call insert(g:simple_bookmarks_deletion_stack, {
+        \ 'name':   name,
+        \ 'file':   bookmark[0],
+        \ 'cursor': bookmark[1],
+        \ 'line':   bookmark[2]
+        \ })
+  call simple_bookmarks#Del(name)
+  CopenBookmarks
+
+  call setpos('.', saved_cursor)
+  echo "Deleted bookmark: ".name
+endfunction
+
+function! s:UndoDeleteQuickfixBookmark()
+  let saved_cursor = getpos('.')
+
+  if empty(g:simple_bookmarks_deletion_stack)
+    echo
+    return
+  endif
+
+  let bookmark_data = remove(g:simple_bookmarks_deletion_stack, 0)
+  call simple_bookmarks#Add(bookmark_data.name, bookmark_data)
+  CopenBookmarks
+  echo
+
+  call setpos('.', saved_cursor)
 endfunction
 
 function! s:QuickfixOpened()
