@@ -1,3 +1,5 @@
+*simple_bookmarks.txt*	Save your current position with a named bookmark
+
 ==============================================================================
 CONTENTS                          *simple-bookmarks* *simple-bookmarks-contents*
 
