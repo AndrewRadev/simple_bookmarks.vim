@@ -110,11 +110,7 @@ function! simple_bookmarks#Highlight()
 
   call s:ReadBookmarks()
 
-  if empty(g:simple_bookmarks_storage_by_file)
-    return
-  endif
-
-  if g:simple_bookmarks_signs
+  if g:simple_bookmarks_signs && expand('%:p') != ''
     exe 'sign unplace * file='.expand('%:p')
   endif
 
@@ -133,6 +129,8 @@ function! simple_bookmarks#Highlight()
       exe 'syntax match SimpleBookmark /^.*\%'.line.'l.*$/'
     endif
   endfor
+
+  redraw!
 endfunction
 
 function! s:ReadBookmarks()
