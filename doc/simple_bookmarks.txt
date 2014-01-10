@@ -117,8 +117,20 @@ more readable, but possibly a bit more difficult to navigate.
 
 Default value: 0
 
-Setting this variable to 1 would make the plugin place "->" signs on
-bookmarked lines.
+Setting this variable to 1 would make the plugin place signs on bookmarked
+lines, "->" by default. See |g:simple_bookmarks_sign_text| for changing the
+sign's text.
+
+
+                                                *g:simple_bookmarks_sign_text*
+>
+    let g:simple_bookmarks_sign_text = '+'
+<
+
+Default value: "->"
+
+If the |g:simple_bookmarks_signs| is set, this variable sets the text that
+the sign will use.
 
 
                                                 *g:simple_bookmarks_highlight*

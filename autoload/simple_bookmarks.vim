@@ -104,10 +104,22 @@ function! simple_bookmarks#BookmarkNames(A, L, P)
 endfunction
 
 function! simple_bookmarks#Highlight()
+  if !(g:simple_bookmarks_highlight || g:simple_bookmarks_signs)
+    return
+  endif
+
   call s:ReadBookmarks()
 
   if empty(g:simple_bookmarks_storage_by_file)
     return
+  endif
+
+  if g:simple_bookmarks_signs
+    exe 'sign unplace * file='.expand('%:p')
+  endif
+
+  if g:simple_bookmarks_highlight
+    exe 'syntax clear SimpleBookmark'
   endif
 
   for entry in get(g:simple_bookmarks_storage_by_file, expand('%:p'), [])
@@ -170,6 +182,10 @@ function! s:WriteBookmarks()
   endfor
 
   call writefile(records, bookmarks_file)
+
+  if g:simple_bookmarks_signs || g:simple_bookmarks_highlight
+    call simple_bookmarks#Highlight()
+  endif
 endfunction
 
 function! s:SetupQuickfixMappings()

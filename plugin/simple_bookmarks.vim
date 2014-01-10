@@ -28,6 +28,10 @@ if !exists('g:simple_bookmarks_signs')
   let g:simple_bookmarks_signs = 0
 endif
 
+if !exists('g:simple_bookmarks_sign_text')
+  let g:simple_bookmarks_sign_text = '->'
+endif
+
 if !exists('g:simple_bookmarks_highlight')
   let g:simple_bookmarks_highlight = 0
 endif
@@ -52,7 +56,7 @@ command! CopenBookmarks call simple_bookmarks#Copen()
 hi link SimpleBookmark Search
 
 if g:simple_bookmarks_signs || g:simple_bookmarks_highlight
-  sign define bookmark text=->
+  exe 'sign define bookmark text='.g:simple_bookmarks_sign_text
   autocmd BufRead * call simple_bookmarks#Highlight()
 endif
 
