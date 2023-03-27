@@ -56,6 +56,14 @@ choose a bookmark. If you don't want these mappings, set the variable
 |g:simple_bookmarks_no_qf_mappings| to 1. Also see
 |g:simple_bookmarks_auto_close|.
 
+If you'd like to have quicker ways to execute the commands, you could make
+mappings to invoke them, something like this:
+>
+    nnoremap <leader>ba :BookmarkAdd<space>
+    nnoremap <leader>bg :BookmarkGo<space>
+    nnoremap <leader>bd :BookmarkDel<space>
+    nnoremap <leader>bq :BookmarkQf<cr>
+<
 Note that bookmarks should be synchronized between vim instances. Anytime you
 add a mark in one vim instance, it should be available in all others. In
 practice, this is achieved by simply reading and writing the whole file on
