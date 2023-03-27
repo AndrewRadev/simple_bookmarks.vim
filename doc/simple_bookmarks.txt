@@ -187,6 +187,21 @@ Default value: 0
 If this variable is set to 1, no custom mappings will be defined in the
 quickfix list.
 
+                                                *g:simple_bookmarks_use_pattern*
+>
+    let g:simple_bookmarks_use_pattern = 1
+<
+Default value: 0
+
+If set to 1, bookmarks will use their saved text lines as patterns in the
+quickfix list. If you're using it to bookmark lines that might move over time,
+this could make the bookmarks more reliable at the cost of losing the column
+position (the quickfix will end up jumping to the beginning of the line).
+
+When using |:BookmarkGo|, the plugin will always attempt to look for the line
+pattern if the remembered line doesn't match.
+
+
 ==============================================================================
 ISSUES                                                 *simple-bookmarks-issues*
 

@@ -48,6 +48,10 @@ if !exists('g:simple_bookmarks_no_qf_mappings')
   let g:simple_bookmarks_no_qf_mappings = 0
 endif
 
+if !exists('g:simple_bookmarks_use_pattern')
+  let g:simple_bookmarks_use_pattern = 0
+endif
+
 command! -nargs=1
       \ BookmarkAdd call simple_bookmarks#Add(<f-args>)
 command! -nargs=1 -complete=custom,simple_bookmarks#BookmarkNames

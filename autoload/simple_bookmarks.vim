@@ -53,10 +53,16 @@ function! simple_bookmarks#Go(name)
     return
   endif
 
-  let [filename, cursor, _line] = g:simple_bookmarks_storage[a:name]
+  let [filename, cursor, line] = g:simple_bookmarks_storage[a:name]
 
   exe 'edit '.filename
   call setpos('.', cursor)
+
+  let line_pattern = s:BuildPattern(line)
+  if getline('.') !~# line_pattern
+    keeppatterns call search(line_pattern, 'c')
+  endif
+
   silent! normal! zo
 endfunction
 
@@ -68,25 +74,27 @@ function! simple_bookmarks#Qf()
   for [name, place] in items(g:simple_bookmarks_storage)
     let [filename, cursor, line] = place
 
-    if g:simple_bookmarks_long_quickfix
-      " then place the line on its own below
-      call add(choices, {
-            \ 'text':     name,
+    let entry = {
             \ 'filename': filename,
             \ 'lnum':     cursor[1],
-            \ 'col':      cursor[2]
-            \ })
+            \ 'col':      cursor[2],
+            \ }
+
+    if g:simple_bookmarks_use_pattern
+      let entry['pattern'] = s:BuildPattern(line)
+    endif
+
+    if g:simple_bookmarks_long_quickfix
+      " then place the line on its own below
+      let entry['text'] = name
+      call add(choices, entry)
       call add(choices, {
             \ 'text': line
             \ })
     else
       " place the line next to the bookmark name
-      call add(choices, {
-            \ 'text':     name.' | '.line,
-            \ 'filename': filename,
-            \ 'lnum':     cursor[1],
-            \ 'col':      cursor[2]
-            \ })
+      let entry['text'] = name . ' | ' . line
+      call add(choices, entry)
     endif
   endfor
 
@@ -273,4 +281,8 @@ function! s:QuickfixOpened()
   endfor
 
   return 0
+endfunction
+
+function s:BuildPattern(line)
+  return '^\s*\V' . escape(a:line, '\') . '\m\s*$'
 endfunction
