@@ -6,15 +6,15 @@ module Support
     end
 
     def create_bookmark
-      vim.command "Bookmark #{bookmark_name}"
+      vim.command "BookmarkAdd #{bookmark_name}"
     end
 
     def open_bookmark
-      vim.command "GotoBookmark #{bookmark_name}"
+      vim.command "BookmarkGo #{bookmark_name}"
     end
 
     def delete_bookmark
-      vim.command "DelBookmark #{bookmark_name}"
+      vim.command "BookmarkDel #{bookmark_name}"
     end
   end
 end

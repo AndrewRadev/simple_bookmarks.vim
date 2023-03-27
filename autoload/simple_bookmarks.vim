@@ -61,7 +61,7 @@ function! simple_bookmarks#Go(name)
 endfunction
 
 " Open all bookmarks in the quickfix window
-function! simple_bookmarks#Copen()
+function! simple_bookmarks#Qf()
   call s:ReadBookmarks()
   let choices = []
 
@@ -243,7 +243,7 @@ function! s:DeleteQuickfixBookmark()
         \ 'line':   bookmark[2]
         \ })
   call simple_bookmarks#Del(name)
-  CopenBookmarks
+  BookmarkQf
 
   call setpos('.', saved_cursor)
   echo "Deleted bookmark: ".name
@@ -259,7 +259,7 @@ function! s:UndoDeleteQuickfixBookmark()
 
   let bookmark_data = remove(g:simple_bookmarks_deletion_stack, 0)
   call simple_bookmarks#Add(bookmark_data.name, bookmark_data)
-  CopenBookmarks
+  BookmarkQf
   echo
 
   call setpos('.', saved_cursor)

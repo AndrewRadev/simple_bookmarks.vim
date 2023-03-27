@@ -1,7 +1,7 @@
 *simple_bookmarks.txt*	Save your current position with a named bookmark
 
 ==============================================================================
-CONTENTS                          *simple-bookmarks* *simple-bookmarks-contents*
+CONTENTS                            *simple-bookmarks* *simple-bookmarks-contents*
 
     Installation...........................: |simple-bookmarks-installation|
     Usage..................................: |simple-bookmarks-usage|
@@ -11,7 +11,7 @@ CONTENTS                          *simple-bookmarks* *simple-bookmarks-contents*
 
 
 ==============================================================================
-INSTALLATION                                   *simple-bookmarks-installation*
+INSTALLATION                                     *simple-bookmarks-installation*
 
 There are several ways to install the plugin. The recommended one is by using
 Tim Pope's pathogen (http://www.vim.org/scripts/script.php?script_id=2332). In
@@ -29,18 +29,18 @@ Another way is to simply copy all the essential directories inside the ~/.vim
 directory: plugin, autoload, doc.
 
 ==============================================================================
-USAGE                                                 *simple-bookmarks-usage*
+USAGE                                                   *simple-bookmarks-usage*
 
-The |:Bookmark| command accepts a name to store the bookmark. It will save the
-current file and the cursor position to ~/.vim_bookmarks (by default).
-Afterwards, you can use |:GotoBookmark| with a specific name to jump to that.
+The |:BookmarkAdd| command accepts a name to store the bookmark. It will save
+the current file and the cursor position to ~/.vim_bookmarks (by default).
+Afterwards, you can use |:BookmarkGo| with a specific name to jump to that.
 The command is tab-completed with all known names.
 
-To delete a mark, use |:DelBookmark|. It works exactly the same as
-|:GotoBookmark| -- it accepts the name of the mark, which is tab-completed.
+To delete a mark, use |:BookmarkDel|. It works exactly the same as
+|:BookmarkGo| -- it accepts the name of the mark, which is tab-completed.
 
-If you'd like to view all your bookmarks, you can use |:CopenBookmarks| to
-load them in the quickfix window.
+If you'd like to view all your bookmarks, you can use |:BookmarkQf| to load
+them in the quickfix window.
 
 In the quickfix window, pressing |dd| will delete a bookmark, and pressing |u|
 will undo the deletion. Also, the quickfix window will auto-close when you
@@ -56,32 +56,32 @@ issues or race conditions. If you find any issues, please open a bug report on
 github: https://github.com/AndrewRadev/simple_bookmarks.vim/issues
 
 ==============================================================================
-COMMANDS                                           *simple-bookmarks-commands*
+COMMANDS                                             *simple-bookmarks-commands*
 
-                                              *:Bookmark*
-:Bookmark {name}     Saves the current file and cursor position as a bookmark
+                                              *:BookmarkAdd*
+:BookmarkAdd {name}  Saves the current file and cursor position as a bookmark
                      with the name {name}.
 
-                                              *:GotoBookmark*
-:GotoBookmark {name} Opens up the bookmark associated with the name {name}.
+                                              *:BookmarkGo*
+:BookmarkGo {name}   Opens up the bookmark associated with the name {name}.
                      Restores the cursor position the way it was at the time
                      the bookmark was created. Tab-completed with all known
                      bookmark names.
 
-                                              *:DelBookmark*
-:DelBookmark {name}  Deletes the bookmark named {name}. Tab-completed with all
+                                              *:BookmarkDel*
+:BookmarkDel {name}  Deletes the bookmark named {name}. Tab-completed with all
                      known bookmark names.
 
-                                              *:CopenBookmarks*
-:CopenBookmarks      Shows all bookmarks in the quickfix window.
+                                              *:BookmarkQf*
+:BookmarkQf      Shows all bookmarks in the quickfix window.
 
 ==============================================================================
-SETTINGS                                           *simple-bookmarks-settings*
+SETTINGS                                             *simple-bookmarks-settings*
 
 These are the variables that control the behaviour of the plugin.
 
 
-                                                 *g:simple_bookmarks_filename*
+                                                   *g:simple_bookmarks_filename*
 >
     let g:simple_bookmarks_filename = '~/.vim_bookmarks'
 <
@@ -98,7 +98,7 @@ second-to-last one, describing the cursor position, contains numbers that are
 colon-delimited.
 
 
-                                            *g:simple_bookmarks_long_quickfix*
+                                              *g:simple_bookmarks_long_quickfix*
 >
     let g:simple_bookmarks_long_quickfix = 0
 <
@@ -110,7 +110,7 @@ this variable to 1 would make them go underneath the line instead, making it
 more readable, but possibly a bit more difficult to navigate.
 
 
-                                                    *g:simple_bookmarks_signs*
+                                                      *g:simple_bookmarks_signs*
 >
     let g:simple_bookmarks_signs = 0
 <
@@ -122,7 +122,7 @@ lines, "->" by default. See |g:simple_bookmarks_sign_text| for changing the
 sign's text.
 
 
-                                                *g:simple_bookmarks_sign_text*
+                                                  *g:simple_bookmarks_sign_text*
 >
     let g:simple_bookmarks_sign_text = '+'
 <
@@ -133,8 +133,8 @@ If the |g:simple_bookmarks_signs| is set, this variable sets the text that
 the sign will use.
 
 
-                                                *g:simple_bookmarks_highlight*
-                                                *SimpleBookmark*
+                                                  *g:simple_bookmarks_highlight*
+                                                                *SimpleBookmark*
 >
     let g:simple_bookmarks_highlight = 0
 <
@@ -146,7 +146,7 @@ The syntax group that's highlighted is |SimpleBookmark| and it's linked to
 |Search| by default. If you want to customize it, you can use Vim's built-in
 |:highlight| command.
 
-                                               *g:simple_bookmarks_auto_close*
+                                                 *g:simple_bookmarks_auto_close*
 >
     let g:simple_bookmarks_auto_close = 1
 <
@@ -158,7 +158,7 @@ window whenever a bookmark is chosen from it. Setting it to 0 disables this
 special behaviour and leaves the quickfix window open.
 
 
-                                                  *g:simple_bookmarks_new_tab*
+                                                    *g:simple_bookmarks_new_tab*
 >
     let g:simple_bookmarks_new_tab = 1
 <
@@ -169,7 +169,7 @@ If this variable is set to 1, the plugin will open bookmarks in a new tab
 instead of using the standard quickfix window behaviour. This won't be in
 effect if |g:simple_bookmarks_no_qf_mappings| is set to 1.
 
-                                           *g:simple_bookmarks_no_qf_mappings*
+                                             *g:simple_bookmarks_no_qf_mappings*
 >
     let g:simple_bookmarks_no_qf_mappings = 1
 <
@@ -180,7 +180,7 @@ If this variable is set to 1, no custom mappings will be defined in the
 quickfix list.
 
 ==============================================================================
-ISSUES                                               *simple-bookmarks-issues*
+ISSUES                                                 *simple-bookmarks-issues*
 
 - Deletion doesn't prompt before removing a bookmark. Maybe it should.
 - The storage mechanism is dead simple and it's possible to break it, though

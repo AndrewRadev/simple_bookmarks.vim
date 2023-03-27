@@ -13,7 +13,7 @@ describe "simple_bookmarks" do
     delete_bookmark
   end
 
-  describe "Bookmark" do
+  describe "BookmarkAdd" do
     it "creates a bookmark at the current line" do
       vim.command '2'
       create_bookmark
@@ -26,7 +26,7 @@ describe "simple_bookmarks" do
     end
   end
 
-  describe "DelBookmark" do
+  describe "BookmarkDel" do
     it "deletes a previously created bookmark" do
       vim.command '2'
       create_bookmark
