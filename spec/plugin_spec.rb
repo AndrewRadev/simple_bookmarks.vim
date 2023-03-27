@@ -21,8 +21,8 @@ describe "simple_bookmarks" do
       vim.edit!('tmp.rb')
       open_bookmark
 
-      vim.echo('getline(".")').should eq contents[1]
-      vim.echo('expand("%")').should eq filename
+      expect(vim.echo('getline(".")')).to eq contents[1]
+      expect(vim.echo('expand("%")')).to eq filename
     end
   end
 
@@ -35,7 +35,7 @@ describe "simple_bookmarks" do
       delete_bookmark
 
       open_bookmark
-      vim.echo('getline(".")').should eq contents[0]
+      expect(vim.echo('getline(".")')).to eq contents[0]
     end
   end
 end
