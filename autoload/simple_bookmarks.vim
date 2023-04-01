@@ -1,6 +1,6 @@
 " Add the current [filename, cursor position, line content] as a bookmark
 " under the given name
-function! simple_bookmarks#Add(name, ...)
+function! simple_bookmarks#Add(name, ...) abort
   if a:0 > 0
     " then we have the needed data as the second argument
     let data   = a:1
@@ -20,7 +20,7 @@ function! simple_bookmarks#Add(name, ...)
     call s:WriteBookmarks()
 
     if s:QuickfixOpened()
-      call simple_bookmarks#Copen()
+      call simple_bookmarks#Qf()
       wincmd p
     endif
   else
@@ -29,7 +29,7 @@ function! simple_bookmarks#Add(name, ...)
 endfunction
 
 " Delete the user-chosen bookmark
-function! simple_bookmarks#Del(name)
+function! simple_bookmarks#Del(name) abort
   call s:ReadBookmarks()
 
   if !has_key(g:simple_bookmarks_storage, a:name)
@@ -40,13 +40,13 @@ function! simple_bookmarks#Del(name)
   call s:WriteBookmarks()
 
   if s:QuickfixOpened()
-    call simple_bookmarks#Copen()
+    call simple_bookmarks#Qf()
     wincmd p
   endif
 endfunction
 
 " Go to the user-chosen bookmark
-function! simple_bookmarks#Go(name)
+function! simple_bookmarks#Go(name) abort
   call s:ReadBookmarks()
 
   if !has_key(g:simple_bookmarks_storage, a:name)
@@ -59,15 +59,22 @@ function! simple_bookmarks#Go(name)
   call setpos('.', cursor)
 
   let line_pattern = s:BuildPattern(line)
-  if getline('.') !~# line_pattern
-    keeppatterns call search(line_pattern, 'c')
+  if g:simple_bookmarks_use_pattern && getline('.') !~# line_pattern
+    keeppatterns let found_line = search(line_pattern, 'cn')
+
+    if found_line
+      let cursor[1] = found_line
+      let g:simple_bookmarks_storage[a:name][1] = cursor
+      call s:WriteBookmarks()
+      call setpos('.', cursor)
+    endif
   endif
 
   silent! normal! zo
 endfunction
 
 " Open all bookmarks in the quickfix window
-function! simple_bookmarks#Qf()
+function! simple_bookmarks#Qf() abort
   call s:ReadBookmarks()
   let choices = []
 
@@ -106,12 +113,12 @@ function! simple_bookmarks#Qf()
 endfunction
 
 " Completion function for choosing bookmarks
-function! simple_bookmarks#BookmarkNames(A, L, P)
+function! simple_bookmarks#BookmarkNames(A, L, P) abort
   call s:ReadBookmarks()
   return join(sort(keys(g:simple_bookmarks_storage)), "\n")
 endfunction
 
-function! simple_bookmarks#Highlight()
+function! simple_bookmarks#Highlight() abort
   if !(g:simple_bookmarks_highlight || g:simple_bookmarks_signs)
     return
   endif
@@ -141,7 +148,7 @@ function! simple_bookmarks#Highlight()
   redraw!
 endfunction
 
-function! s:ReadBookmarks()
+function! s:ReadBookmarks() abort
   let bookmarks      = {}
   let files          = {}
   let bookmarks_file = fnamemodify(g:simple_bookmarks_filename, ':p')
@@ -194,7 +201,7 @@ function! s:WriteBookmarks()
   endif
 endfunction
 
-function! s:SetupQuickfixMappings()
+function! s:SetupQuickfixMappings() abort
   if g:simple_bookmarks_no_qf_mappings
     return
   endif
@@ -217,7 +224,7 @@ function! s:SetupQuickfixMappings()
   nnoremap <buffer> u :call <SID>UndoDeleteQuickfixBookmark()<cr>
 endfunction
 
-function! s:DeleteQuickfixBookmark()
+function! s:DeleteQuickfixBookmark() abort
   let saved_cursor = getpos('.')
   let index        = line('.') - 1
   let qflist       = getqflist()
